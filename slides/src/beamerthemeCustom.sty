@@ -1,0 +1,96 @@
+% the 3 colors
+\definecolor{Color1}{HTML}{25567B}
+\definecolor{Color2}{HTML}{033E6B}
+\definecolor{Color33}{HTML}{66A3D2}
+\definecolor{Color3}{HTML}{153F6C}
+
+\usepackage{booktabs,latexsym,amssymb,wasysym,tikz}
+\hypersetup{colorlinks,linkcolor=,urlcolor=Color3}
+
+%\useinnertheme[shadow=true]{rounded}
+\useoutertheme{infolines}%{split}
+\usecolortheme{whale}
+\usecolortheme{orchid}
+
+\setbeamercolor*{titlelike}{parent=structure,bg=Color3,fg=white}
+
+%
+\setbeamerfont{section title}{parent=title}
+\setbeamercolor{section title}{parent=titlelike}
+
+
+\setbeamercolor*{subsection in head/foot}{parent=title primary,bg=Color33}
+
+% to disable the navigation bar
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{frametitle}{bg=white,fg=Color2}
+
+\setbeamercolor{palette primary}{bg=Color3,fg=white}
+\setbeamercolor{palette secondary}{bg=Color2}
+\setbeamercolor{palette tertiary}{bg=Color3}
+\setbeamercolor{palette quaternary}{bg=Color1}
+\setbeamercolor{back in footline}{bg=white}
+\setbeamercolor{normal text}{fg=Color1}
+\setbeamercolor{block title}{bg=Color2}
+\setbeamercolor{example text}{fg=Color3}
+\setbeamercolor{alerted text}{fg=Color1}
+
+\setbeamercolor{item}{parent=normal text}
+\setbeamercolor{section in toc}{fg=Color3}
+\setbeamertemplate{section in toc}[ball unnumbered]
+
+\addtobeamertemplate{block begin}{\pgfsetfillopacity{0.5}}{\pgfsetfillopacity{1}}
+
+% title blocks: can be better depending on selected colors
+%\setbeamercolor{titlelike}{bg=Color2,fg=white}
+
+\newcommand{\code}[1]{\textcolor{Color3}{\footnotesize{\texttt{#1}}}}
+\newcommand{\entity}[1]{\textcolor{Color2}{#1}}
+\newcommand{\good}{\textcolor{green}{\smiley}}
+\newcommand{\bad}{\textcolor{red}{\frownie}}
+% headline frametitle
+%\setbeamertemplate{frametitle}{yolo}
+\setbeamertemplate{headline}{
+  \leavevmode
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
+      \usebeamerfont{date in head/foot}\insertsection
+    \end{beamercolorbox}
+  }
+}
+
+\setbeamertemplate{background}{
+  \ifnum\value{page}=1
+     \includegraphics[height=\paperheight,keepaspectratio]{securite-reseau.jpg}
+  \else\fi
+}
+
+%\defbeamertemplate*{title page}{foo}{
+\setbeamertemplate{title page}{%
+%  \thispagestyle{empty}
+  \nointerlineskip
+  \vspace{4.5cm}
+  \begin{beamercolorbox}[rounded=true,sep=0.13cm,ht=3.5cm,wd=0.7\paperwidth]{back in footline}
+%     \vbox{}\vskip-2ex%
+     {\Huge\begin{flushright}\inserttitle %
+       \end{flushright}
+     }\par
+     \center\insertauthor
+     \center\insertdate
+%        \vskip-10.8ex%
+  \end{beamercolorbox}
+}
+
+%%   \setbeamertemplate{footline}{}
+%%   title here
+%% }
+
+\setbeamertemplate{footline}{
+  \leavevmode
+  \hbox{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=5.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{back in footline}
+    \usebeamerfont{palette primary}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}\hfill\includegraphics[height=0.5cm]{ovhlogo.png}
+  \end{beamercolorbox}}
+}

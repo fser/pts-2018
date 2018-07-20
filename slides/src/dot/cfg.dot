@@ -1,0 +1,24 @@
+# dot -Tpng -o cfg.png
+digraph {
+        node [shape=rectangle];
+        {
+                exit_ok [label="keep",color=green];
+                exit_ko [label="discard",color=red];
+        }
+        node [shape=oval];
+        {
+                test_ether [label="EtherType==IPv4"];
+                test_udp [label="Protocol == UDP"];
+                test_frag [label="Packet not fragmented"];
+                test_dport[label="dport == 11211"];
+        }
+        test_ether -> exit_ko;
+        test_ether -> test_udp;
+        test_udp -> test_frag;
+        test_udp -> exit_ko;
+        test_frag -> exit_ko;
+        test_frag -> test_dport;
+        test_dport -> exit_ok;
+        test_dport -> exit_ko;
+
+}
