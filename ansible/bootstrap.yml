@@ -1,0 +1,130 @@
+---
+- hosts: all
+  gather_facts: False
+  pre_tasks:
+    - set_fact:
+        iproute2_dir: "/root/iproute2"
+        kernel_dir: "/root/linux"
+        bcc_dir: "/root/bcc"
+        iperf_dir: "/root/iperf"
+      tags:
+        - always
+
+  tasks:
+    - name: Install python
+      raw: apt install -y python
+
+    - name: Install prerequisites
+      apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600 install_recommends=no
+      with_items:
+        - curl
+        - git-core
+        - unzip
+        - netcat
+        - clang
+        - llvm-3.8
+        - libcap-dev
+        - build-essential
+        - bison
+        - flex
+        - strace
+        - systemtap-sdt-dev
+        - libaudit-dev
+        - libunwind-dev
+        - systemtap-sdt-dev
+        - libssl-dev
+        - libslang2-dev
+        - python-dev
+        - libiberty-dev
+        - liblzma-dev
+        - libnuma-dev
+        - libiberty-dev
+        - libreadline-dev
+        - binutils-dev
+      tags:
+        - apt
+
+    - name: Retrieve IPRoute2
+      git:
+        repo: 'git://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git'
+        dest: "{{ iproute2_dir }}"
+        accept_hostkey: yes
+      tags:
+        - git
+
+    - name: Build IPRoute2
+      shell: make
+      args:
+        chdir: "{{ iproute2_dir }}"
+      tags:
+        - build
+
+    - name: Retrieve BCC
+      git:
+        repo: 'https://github.com/iovisor/bcc.git'
+        dest: "{{ bcc_dir }}"
+      tags:
+        - git
+
+    - name: Install dependencies for BCC
+      apt: name={{ item }} state=present
+      with_items:
+        - debhelper
+        - cmake
+        - libllvm3.8
+        - llvm-3.8-dev
+        - libclang-3.8-dev
+        - libelf-dev
+        - bison
+        - flex
+        - libedit-dev
+        - clang-format-3.8
+        - python
+        - python-netaddr
+        - python-pyroute2
+        - luajit
+        - libluajit-5.1-dev
+        - arping
+        - iperf
+        - ethtool
+        - zlib1g-dev
+        - libfl-dev
+        - numactl
+        - apt-file
+        - uuid-dev
+      tags:
+        - apt
+
+    - name: Retrieve a kernel
+      git:
+        repo: 'git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git'
+        dest: "{{ kernel_dir }}"
+        accept_hostkey: yes
+        version: v4.15
+      tags:
+        - git
+
+    - name: Push kernel config file
+      copy: src="files/kernel_config" dest="{{ kernel_dir }}/.config"
+     tags:
+        - always
+
+    - name: compile kernel or not
+      set_fact:
+        compile: no
+    - name: Try to compile the kernel
+      shell: make oldconfig ; make -j 32 deb-pkg
+      args:
+        chdir: "{{ kernel_dir }}"
+      tags:
+        - build
+      when: compile
+
+    - name: build perf
+      shell: make -j && make install prefix=/usr/local
+      args:
+        chdir: "{{ kernel_dir }}/tools/perf"
+      tags:
+        - perf
+      when: compile
+
